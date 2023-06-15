@@ -34,8 +34,13 @@ node find(node r, int u){
     }
     return NULL;
 }
-
+    int num=0;
 void insert(node &r, int u, int v, int cat){
+    if(find(r, u)==NULL || find(r, v)!=NULL){
+        // printf("* ");
+        num=1;
+        return;
+    }
     if(r==NULL){
         r = makeNode(v, cat);
     }else{
@@ -62,9 +67,8 @@ void PreOrder(node r){
         p=p->right_sibling;
     }
 }
-
 void solve(node r, int pathCat){
-    if(r==NULL){
+    if(r==NULL || pathCat>m){
         return;
     }
     // if(r->cat==0 && r->leftmost_child!=NULL){
@@ -72,23 +76,27 @@ void solve(node r, int pathCat){
     // }
     if(r->leftmost_child==NULL){
             if(pathCat<=m){
-                cout<<r->data<<" ";
+                // cout<<r->data<<" ";
                 count++;
             }
     }
+    // cout<<r->data<<" ";
     node p =r->leftmost_child;
     while(p!=NULL){
-        solve(p, pathCat+p->cat);
+        if(p->cat==0) solve(p, 0);
+        else solve(p, pathCat+p->cat);
         p=p->right_sibling;
     }
 }
+
 int main(){
     node root = NULL;
     cin>>n>>m;
     for(int i = 1; i <= n; i++){
         cin>>a[i];
     }
-    insert(root,1,1,a[1]);
+    root = makeNode(1, a[1]);
+    // insert(root,1,1,a[1]);
     int x, y;
     for(int i = 2; i <= n; i++){
         cin>>x>>y;
@@ -100,10 +108,17 @@ int main(){
     // root->leftmost_child->right_sibling = makeNode(3, 0);
     // root->leftmost_child->right_sibling->leftmost_child=makeNode(4, 0);
     // root->leftmost_child->right_sibling->leftmost_child->right_sibling=makeNode(5, 0);
+    //     cout<<"\n"<<num<<"\n";
     // PreOrder(root);
     cout<<"\n";
-    solve(root, a[1]);
-    cout<<"\n"<<count;
+    if(num){
+        cout<<"*";
+        cout<<count;
+    }else{
+        solve(root, a[1]);
+        cout<<count;
+    }
+
     // if(find(root, 3)!=NULL){
     //     cout<<"Yes";
     // }else cout<<"No";
